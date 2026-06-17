@@ -7,7 +7,7 @@
 #   By: tny-onin <tny-onin@student.42antananarivo.   +#+  +:+       +#+       #
 #                                                  +#+#+#+#+#+   +#+          #
 #   Created: 2026/05/19 14:40:34 by tny-onin            #+#    #+#            #
-#   Updated: 2026/05/29 15:48:38 by tny-onin           ###   ########.fr      #
+#   Updated: 2026/06/13 15:56:26 by tny-onin           ###   ########.fr      #
 #                                                                             #
 # ########################################################################### #
 
@@ -15,6 +15,7 @@ import sys
 
 
 def file_handle(file_name: str) -> None:
+    f = None
     try:
         print(f"Accessing file '{file_name}'")
         f = open(file_name, "r")
@@ -24,8 +25,6 @@ def file_handle(file_name: str) -> None:
 
         print("\n---")
         print(f"File '{file_name}' closed.\n")
-        f.close()
-
         transformed = ""
         for letter in contain:
             if letter == '\n':
@@ -43,14 +42,22 @@ def file_handle(file_name: str) -> None:
         if file_saved_name == '':
             print("Not saving data.")
         else:
+            f = None
             print(f"Saving data to '{file_saved_name}'")
-            f = open(file_saved_name, 'w')
-            f.write(transformed)
-            print(f"Data saved in file '{file_saved_name}'")
-            f.close()
-
+            try:
+                f = open(file_saved_name, 'w')
+                f.write(transformed)
+                print(f"Data saved in file '{file_saved_name}'")
+            except OSError as e:
+                print(f"Error opening file '{file_name}': {e}")
+            finally:
+                if f is not None:
+                    f.close()
     except OSError as e:
         print(f"Error opening file '{file_name}': {e}")
+    finally:
+        if f is not None:
+            f.close()
 
 
 def main() -> None:
